@@ -113,10 +113,6 @@ var app = new Vue({
         profile: frontendData.profile
     },
     created: function () {
-        // cafeApi.get().then(result =>
-        //     result.json().then(data =>
-        //         data.forEach(cafe => this.cafes.push(cafe))
-        //     )
-        // )
+
     }
 });
