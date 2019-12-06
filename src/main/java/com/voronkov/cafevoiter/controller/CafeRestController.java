@@ -84,11 +84,14 @@ public class CafeRestController {
         Set<User> votes = cafe.getVotes();
 
         if (votes.contains(currentUser)) {
+            log.info("IN -1 голос");
             votes.remove(currentUser);
         } else {
+            log.info("IN +1 голос");
             votes.add(currentUser);
         }
-        return cafe;
+        log.info("IN у кафе {} - {} голосов", cafe.getName(), votes.size());
+        return cafeService.save(cafe);
     }
 }
 

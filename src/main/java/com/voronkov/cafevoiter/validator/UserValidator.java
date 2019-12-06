@@ -27,8 +27,8 @@ public class UserValidator implements Validator {
     public void validate(Object o, Errors errors) {
         User user = (User) o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "Required");
-        if (user.getName().length() < 2 || user.getName().length() > 50) {
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Required");
+        if (user.getUsername().length() < 2 || user.getUsername().length() > 50) {
             errors.rejectValue("name", "Неправильное количество символов");
         }
 
