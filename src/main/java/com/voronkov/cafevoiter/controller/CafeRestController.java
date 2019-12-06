@@ -1,59 +1,87 @@
 package com.voronkov.cafevoiter.controller;
 
 import com.voronkov.cafevoiter.model.Cafe;
-import com.voronkov.cafevoiter.repository.CafeRepository;
-import org.springframework.beans.BeanUtils;
+import com.voronkov.cafevoiter.repository.CrudCafeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("cafes")
 public class CafeRestController {
 
-    private final CafeRepository cafeRepository;
+    private static Logger log = LoggerFactory.getLogger(CafeRestController.class);
+
+//    @Autowired
+//    private CafeService cafeService;
 
     @Autowired
-    public CafeRestController(CafeRepository cafeRepository) {
-        this.cafeRepository = cafeRepository;
-    }
+    private CrudCafeRepository cafeRepository;
+
+//    private final CafeValidator cafeValidator;
+
+//    @Autowired
+//    public CafeRestController(CrudCafeRepository cafeRepository, CafeValidator cafeValidator) {
+//        this.cafeValidator = cafeValidator;
+//    }
 
     @GetMapping
-    public ResponseEntity<List<Cafe>> getAllCafes() {
-        List<Cafe> cafes = cafeRepository.findAll();
-
-        if (cafes.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(cafes, HttpStatus.OK);
+    public List<Cafe> getAll() {
+        return cafeRepository.findAll();
     }
 
-    @GetMapping("{id}")
-    public Cafe getOne(@PathVariable("id")Cafe cafe) {
-        return cafe;
-    }
+//    @GetMapping
+//    public List<CafeTo> getAllCafes(@AuthenticationPrincipal User user) {
+//        return CafeUtil.getCafesWithVotes(cafeService.getAll());
+//    }
+//
+//    @GetMapping("{id}")
+//    public CafeTo getOne(@PathVariable("id") int id) {
+//        return CafeUtil.createWithVote(cafeService.getById(id), false);
+//    }
+//
+//    @PostMapping
+//    public Cafe createCafe(@RequestBody Cafe cafe, BindingResult result) {
+//        cafeValidator.validate(cafe, result);
+//        if (!result.hasErrors()) {
+//            cafe.setCreatedDate(LocalDateTime.now());
+//            return cafeService.save(cafe);
+//        }
+//        return null;
+//    }
+//
+//    @PutMapping("{id}")
+//    public Cafe update(@PathVariable("id") Cafe cafeFromDb, @RequestBody Cafe cafe) {
+//        //cafeFromDb - кафе из бд, которе редактируем, берём его значения и заменяем новыми, всеми кроме id и даты
+//        BeanUtils.copyProperties(cafe, cafeFromDb, "id", "date");
+//        return cafeService.save(cafeFromDb);
+//    }
+//
+//    @DeleteMapping("{id}")
+//    public void delete(@PathVariable("id") Cafe cafe) {
+//        cafeService.delete(cafe);
+//    }
 
-    @PostMapping
-    public Cafe create(@RequestBody Cafe cafe) {
-        cafe.setCreatedDate(LocalDateTime.now());
-        return cafeRepository.save(cafe);
-    }
-
-    @PutMapping("{id}")
-    public Cafe update(@PathVariable("id") Cafe cafeFromDb, @RequestBody Cafe cafe) {
-        //cafeFromDb - кафе из бд, которе редактируем, берём его значения и заменяем новыми, всеми кроме id и даты
-        BeanUtils.copyProperties(cafe, cafeFromDb, "id", "date");
-        return cafeRepository.save(cafeFromDb);
-    }
-
-    @DeleteMapping("{id}")
-    public @ResponseBody void delete(@PathVariable("id") Cafe cafe) {
-        cafeRepository.delete(cafe);
-    }
+//    @GetMapping("{id}/vote")
+//    public Cafe vote(@AuthenticationPrincipal User currentUser, @PathVariable("id") Cafe cafe) {
+//
+//        log.info("IN ЮЗЕР: {}", currentUser);
+//        log.info("IN КАФЕ: {}", cafe);
+//
+//        Set<User> votes = cafe.getVotes();
+//
+//        if (votes.contains(currentUser)) {
+//            votes.remove(currentUser);
+//        } else {
+//            votes.add(currentUser);
+//        }
+//        return cafe;
+//    }
 }
 
 

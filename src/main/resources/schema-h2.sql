@@ -1,49 +1,56 @@
-DROP TABLE USER_ROLES IF EXISTS;
-DROP TABLE USERS IF EXISTS;
-DROP TABLE SPRING_SESSION IF EXISTS;
-DROP TABLE SPRING_SESSION_ATTRIBUTES IF EXISTS;
--- DROP TABLE usr IF EXISTS;
+DROP TABLE user_roles IF EXISTS;
+DROP TABLE users IF EXISTS;
+DROP TABLE cafes IF EXISTS;
+DROP TABLE cafe_votes IF EXISTS;
+-- DROP TABLE meals IF EXISTS;
 DROP SEQUENCE USER_SEQ IF EXISTS;
+DROP SEQUENCE CAFE_SEQ IF EXISTS;
 
--- CREATE SEQUENCE USER_SEQ START WITH 100000;
+CREATE SEQUENCE USER_SEQ START WITH 100000;
 CREATE SEQUENCE CAFE_SEQ START WITH 1;
 
--- CREATE TABLE users
--- (
---     id               INTEGER DEFAULT USER_SEQ.nextval PRIMARY KEY,
---     name             VARCHAR(255)            NOT NULL,
---     email            VARCHAR(255)            NOT NULL,
---     password         VARCHAR(255)            NOT NULL,
---     is_vote          BOOLEAN DEFAULT FALSE   NOT NULL
--- );
--- CREATE UNIQUE INDEX users_unique_email_idx
---     ON USERS (email);
+CREATE TABLE users
+(
+    id               INTEGER DEFAULT USER_SEQ.nextval PRIMARY KEY,
+    name             VARCHAR(255)            NOT NULL,
+    email            VARCHAR(255)            NOT NULL,
+    password         VARCHAR(255)            NOT NULL,
+    enabled          BOOLEAN DEFAULT TRUE    NOT NULL
+);
+CREATE UNIQUE INDEX users_unique_email_idx
+    ON users (email);
 
-CREATE TABLE CAFES
+CREATE TABLE cafes
 (
     id               INTEGER DEFAULT CAFE_SEQ.nextval PRIMARY KEY,
     name             VARCHAR(255)            NOT NULL,
-    rating           INTEGER DEFAULT 0       NOT NULL,
     date             TIMESTAMP DEFAULT now() NOT NULL
 );
 CREATE UNIQUE INDEX cafes_unique_name_idx
-    ON CAFES (name);
+    ON cafes (name);
 
--- CREATE TABLE user_roles
+-- CREATE TABLE MEALS
 -- (
---     user_id INTEGER NOT NULL,
---     role    VARCHAR(255),
---     CONSTRAINT user_roles_idx UNIQUE (user_id, role),
---     FOREIGN KEY (user_id) REFERENCES USERS (id) ON DELETE CASCADE
+--     id               INTEGER DEFAULT CAFE_SEQ.nextval PRIMARY KEY,
+--     name             VARCHAR(255)            NOT NULL,
+--     price            DOUBLE                  NOT NULL,
+--     cafe_id          INTEGER                 NOT NULL,
+--     FOREIGN KEY (cafe_id) REFERENCES CAFES (id) ON DELETE CASCADE
 -- );
+-- CREATE UNIQUE INDEX meals_unique_idx
+--     ON MEALS (name);
 
-create table USR
+CREATE TABLE cafe_votes
 (
-    ID         VARCHAR(255) not null
-        primary key,
-    EMAIL      VARCHAR(255),
-    LAST_VISIT TIMESTAMP(6, 0),
-    LOCALE     VARCHAR(255),
-    NAME       VARCHAR(255),
-    USERPIC    VARCHAR(255)
+    cafe_id         BIGINT               NOT NULL REFERENCES cafes (id),
+    user_id         BIGINT               NOT NULL REFERENCES users (id),
+    PRIMARY KEY (cafe_id, user_id)
+);
+
+CREATE TABLE user_roles
+(
+    user_id INTEGER NOT NULL,
+    role    VARCHAR(255),
+    CONSTRAINT user_roles_idx UNIQUE (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

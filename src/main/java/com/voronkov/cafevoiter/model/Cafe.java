@@ -1,15 +1,16 @@
 package com.voronkov.cafevoiter.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cafes")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Cafe {
 
     private static final int START_SEQ = 1;
@@ -24,19 +25,24 @@ public class Cafe {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "rating")
-    private int rating;
-
     @Column(name = "date", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
 
+//    @ManyToMany
+//    @JoinTable(name = "cafe_votes",
+//            joinColumns = {@JoinColumn(name = "cafe_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "user_id")})
+//    private Set<User> votes = new HashSet<>();
+
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cafe")
+//    private List<Meals> meals;
+
     public Cafe() {
     }
 
-    public Cafe(@NotBlank @Size(min = 1, max = 60) String name, int rating) {
+    public Cafe(String name) {
         this.name = name;
-        this.rating = rating;
         this.createdDate = LocalDateTime.now();
     }
 
@@ -56,14 +62,6 @@ public class Cafe {
         this.name = name;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -72,4 +70,20 @@ public class Cafe {
         this.createdDate = createdDate;
     }
 
+//    public Set<User> getVotes() {
+//        return votes;
+//    }
+//
+//    public void setVotes(Set<User> votes) {
+//        this.votes = votes;
+//    }
+
+    @Override
+    public String toString() {
+        return "Cafe{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }
