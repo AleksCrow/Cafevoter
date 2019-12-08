@@ -20,10 +20,10 @@ public class TimeUtil {
 
     public static boolean canVote(Cafe cafe) {
         log.info("IN ---------------------------------");
-        log.info("IN допустимое время: {}", cafe.getCreatedDate().plusDays(1).withHour(11));
+        log.info("IN допустимое время: {}", cafe.getCreatedDate().withHour(11).withMinute(0).withSecond(0));
         log.info("IN ---------------------------------");
         return isBetween(LocalDateTime.now(),
                 cafe.getCreatedDate(),
-                cafe.getCreatedDate().plusDays(1).withHour(11));
+                cafe.getCreatedDate().withHour(11).withMinute(0).withSecond(0));
     }
 }
