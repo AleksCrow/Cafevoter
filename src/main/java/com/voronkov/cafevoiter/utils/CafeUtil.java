@@ -13,11 +13,11 @@ public class CafeUtil {
     }
 
     public static List<CafeTo> getCafesWithVotes(Collection<Cafe> cafes) {
-        return cafes.stream().map(cafe -> createWithVote(cafe, false))
+        return cafes.stream().map(CafeUtil::createWithVote)
                 .collect(Collectors.toList());
     }
 
-    public static CafeTo createWithVote(Cafe cafe, boolean meVoted) {
-        return new CafeTo(cafe, cafe.getVotes().size(), meVoted);
+    public static CafeTo createWithVote(Cafe cafe) {
+        return new CafeTo(cafe, cafe.getVotes().size());
     }
 }

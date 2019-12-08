@@ -41,7 +41,7 @@ public class CafeRestController {
 
     @GetMapping("{id}")
     public CafeTo getOne(@PathVariable("id") int id) {
-        return CafeUtil.createWithVote(cafeService.getById(id), false);
+        return CafeUtil.createWithVote(cafeService.getById(id));
     }
 
     @PostMapping
