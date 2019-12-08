@@ -17,10 +17,15 @@ public class CafeService {
 
     private static Logger log = LoggerFactory.getLogger(CafeService.class);
 
+    private final CrudCafeRepository cafeRepository;
+
     @Autowired
-    private CrudCafeRepository cafeRepository;
+    public CafeService(CrudCafeRepository cafeRepository) {
+        this.cafeRepository = cafeRepository;
+    }
 
     public List<Cafe> getAll() {
+        log.info("IN найдено: {} кафешек", cafeRepository.findAll().size());
         return cafeRepository.findAll();
     }
 
@@ -30,10 +35,12 @@ public class CafeService {
     }
 
     public Cafe save(Cafe cafe) {
+        log.info("IN кафе сохранено");
         return cafeRepository.save(cafe);
     }
 
     public void delete(Cafe cafe) {
+        log.info("IN кафе {} удалено", cafe.getName());
         cafeRepository.delete(cafe);
     }
 }

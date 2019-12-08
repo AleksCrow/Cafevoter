@@ -19,7 +19,6 @@ public class UserRestController {
     private static Logger log = LoggerFactory.getLogger(UserRestController.class);
 
     private final UserService userService;
-
     private final UserValidator userValidator;
 
     @Autowired

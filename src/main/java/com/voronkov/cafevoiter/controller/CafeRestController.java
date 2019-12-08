@@ -2,10 +2,10 @@ package com.voronkov.cafevoiter.controller;
 
 import com.voronkov.cafevoiter.model.Cafe;
 import com.voronkov.cafevoiter.model.User;
-import com.voronkov.cafevoiter.repository.CrudCafeRepository;
 import com.voronkov.cafevoiter.service.CafeService;
 import com.voronkov.cafevoiter.to.CafeTo;
 import com.voronkov.cafevoiter.utils.CafeUtil;
+import com.voronkov.cafevoiter.utils.TimeUtil;
 import com.voronkov.cafevoiter.validator.CafeValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,23 +25,14 @@ public class CafeRestController {
 
     private static Logger log = LoggerFactory.getLogger(CafeRestController.class);
 
-    @Autowired
-    private CafeService cafeService;
-
-//    @Autowired
-//    private CrudCafeRepository cafeRepository;
-
+    private final CafeService cafeService;
     private final CafeValidator cafeValidator;
 
     @Autowired
-    public CafeRestController(CrudCafeRepository cafeRepository, CafeValidator cafeValidator) {
+    public CafeRestController(CafeValidator cafeValidator, CafeService cafeService) {
         this.cafeValidator = cafeValidator;
+        this.cafeService = cafeService;
     }
-
-//    @GetMapping
-//    public List<Cafe> getAll() {
-//        return cafeRepository.findAll();
-//    }
 
     @GetMapping
     public List<CafeTo> getAllCafes(@AuthenticationPrincipal User user) {
@@ -83,14 +74,19 @@ public class CafeRestController {
 
         Set<User> votes = cafe.getVotes();
 
+        if (!TimeUtil.canVote(cafe)){
+            log.info("IN время для голосования окончено");
+            return null;
+        }
+
         if (votes.contains(currentUser)) {
-            log.info("IN -1 голос");
+            log.info("IN кафе {} получает: -1 голос", cafe.getName());
             votes.remove(currentUser);
         } else {
-            log.info("IN +1 голос");
+            log.info("IN кафе {} получает: +1 голос", cafe.getName());
             votes.add(currentUser);
         }
-        log.info("IN у кафе {} - {} голосов", cafe.getName(), votes.size());
+        log.info("IN у кафе {} - {} голос", cafe.getName(), votes.size());
         return cafeService.save(cafe);
     }
 }

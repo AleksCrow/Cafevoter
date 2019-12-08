@@ -26,8 +26,6 @@ CREATE TABLE cafes
     name             VARCHAR(255)            NOT NULL,
     date             TIMESTAMP DEFAULT now() NOT NULL
 );
-CREATE UNIQUE INDEX cafes_unique_name_idx
-    ON cafes (name);
 
 -- CREATE TABLE MEALS
 -- (
