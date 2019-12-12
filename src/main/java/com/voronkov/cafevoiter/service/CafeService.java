@@ -1,5 +1,6 @@
 package com.voronkov.cafevoiter.service;
 
+import com.voronkov.cafevoiter.exception.NotFoundException;
 import com.voronkov.cafevoiter.model.Cafe;
 import com.voronkov.cafevoiter.repository.CrudCafeRepository;
 import org.slf4j.Logger;
@@ -27,8 +28,13 @@ public class CafeService {
     }
 
     public Cafe getById(int id) {
+        Cafe cafe = cafeRepository.findById(id).orElse(null);
+        if (cafe == null) {
+            log.info("IN кафе с id: {} не найдено", id);
+            throw new NotFoundException();
+        }
         log.info("IN кафе с id: {} найдено", id);
-        return cafeRepository.getOne(id);
+        return cafe;
     }
 
     public Cafe save(Cafe cafe) {

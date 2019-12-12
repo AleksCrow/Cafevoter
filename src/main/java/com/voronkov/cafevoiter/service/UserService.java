@@ -1,5 +1,6 @@
 package com.voronkov.cafevoiter.service;
 
+import com.voronkov.cafevoiter.exception.NotFoundException;
 import com.voronkov.cafevoiter.model.Role;
 import com.voronkov.cafevoiter.model.User;
 import com.voronkov.cafevoiter.repository.CrudUserRepository;
@@ -38,7 +39,7 @@ public class UserService implements UserDetailsService {
         User result = userRepository.findById(id).orElse(null);
         if (result == null) {
             log.warn("IN юзер с id: {} не найден", id);
-            return null;
+            throw new NotFoundException();
         }
         log.info("IN юзер с id: {} найден", id);
         return result;
