@@ -1,4 +1,4 @@
-package com.voronkov.cafevoiter.exception;
+package com.voronkov.cafevoiter.utils.exception;
 
 public class NotFoundException extends RuntimeException {
 

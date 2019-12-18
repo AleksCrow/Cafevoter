@@ -1,9 +1,9 @@
 package com.voronkov.cafevoiter.service;
 
-import com.voronkov.cafevoiter.exception.NotFoundException;
 import com.voronkov.cafevoiter.model.Role;
 import com.voronkov.cafevoiter.model.User;
 import com.voronkov.cafevoiter.repository.CrudUserRepository;
+import com.voronkov.cafevoiter.utils.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

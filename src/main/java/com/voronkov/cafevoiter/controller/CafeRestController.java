@@ -1,6 +1,7 @@
 package com.voronkov.cafevoiter.controller;
 
 import com.voronkov.cafevoiter.model.Cafe;
+import com.voronkov.cafevoiter.model.Meals;
 import com.voronkov.cafevoiter.model.User;
 import com.voronkov.cafevoiter.service.CafeService;
 import com.voronkov.cafevoiter.to.CafeTo;
@@ -35,13 +36,18 @@ public class CafeRestController {
     }
 
     @GetMapping
-    public List<CafeTo> getAllCafes(@AuthenticationPrincipal User user) {
+    public List<CafeTo> getAllCafes() {
         return CafeUtil.getCafesWithVotes(cafeService.getAll());
     }
 
     @GetMapping("{id}")
     public CafeTo getOne(@PathVariable("id") int id) {
         return CafeUtil.createWithVote(cafeService.getById(id));
+    }
+
+    @GetMapping("{id}/meals")
+    public List<Meals> getMeals(@PathVariable("id") int id) {
+        return cafeService.getById(id).getMeals();
     }
 
     @PostMapping
@@ -91,6 +97,13 @@ public class CafeRestController {
     }
 }
 
+
+//1. Добавить блюда
+//2. Доработать обработку ошибок
+//3. Сделать тесты
+//4. проверить по reference
+//5. добавить историю и поиск по дате
+//6. добавить шифрование пароля
 
 /*команды для консоли
 

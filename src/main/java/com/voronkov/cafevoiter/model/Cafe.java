@@ -7,7 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,21 +33,23 @@ public class Cafe {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "cafe_votes",
             joinColumns = {@JoinColumn(name = "cafe_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private Set<User> votes = new HashSet<>();
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cafe")
-//    private List<Meals> meals;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "meals", joinColumns = @JoinColumn(name = "cafe_id"))
+    private List<Meals> meals = new ArrayList<>();
 
     public Cafe() {
     }
 
-    public Cafe(String name) {
+    public Cafe(String name, List<Meals> meals) {
         this.name = name;
         this.createdDate = LocalDateTime.now();
+        this.meals = meals;
     }
 
     public Integer getId() {
@@ -78,6 +82,14 @@ public class Cafe {
 
     public void setVotes(Set<User> votes) {
         this.votes = votes;
+    }
+
+    public List<Meals> getMeals() {
+        return meals;
+    }
+
+    public void setMeals(List<Meals> meals) {
+        this.meals = meals;
     }
 
     @Override

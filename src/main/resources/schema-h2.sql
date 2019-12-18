@@ -2,7 +2,7 @@ DROP TABLE user_roles IF EXISTS;
 DROP TABLE users IF EXISTS;
 DROP TABLE cafes IF EXISTS;
 DROP TABLE cafe_votes IF EXISTS;
--- DROP TABLE meals IF EXISTS;
+DROP TABLE meals IF EXISTS;
 DROP SEQUENCE USER_SEQ IF EXISTS;
 DROP SEQUENCE CAFE_SEQ IF EXISTS;
 
@@ -27,21 +27,18 @@ CREATE TABLE cafes
     date             TIMESTAMP DEFAULT now() NOT NULL
 );
 
--- CREATE TABLE MEALS
--- (
---     id               INTEGER DEFAULT CAFE_SEQ.nextval PRIMARY KEY,
---     name             VARCHAR(255)            NOT NULL,
---     price            DOUBLE                  NOT NULL,
---     cafe_id          INTEGER                 NOT NULL,
---     FOREIGN KEY (cafe_id) REFERENCES CAFES (id) ON DELETE CASCADE
--- );
--- CREATE UNIQUE INDEX meals_unique_idx
---     ON MEALS (name);
+CREATE TABLE MEALS
+(
+    name             VARCHAR(255)            NOT NULL,
+    price            DOUBLE                  NOT NULL,
+    cafe_id          INTEGER                 NOT NULL,
+    FOREIGN KEY (cafe_id) REFERENCES cafes (id) ON DELETE CASCADE
+);
 
 CREATE TABLE cafe_votes
 (
-    cafe_id         BIGINT               NOT NULL REFERENCES cafes (id),
-    user_id         BIGINT               NOT NULL REFERENCES users (id),
+    cafe_id         INTEGER               NOT NULL REFERENCES cafes (id),
+    user_id         INTEGER               NOT NULL REFERENCES users (id),
     PRIMARY KEY (cafe_id, user_id)
 );
 

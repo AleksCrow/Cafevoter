@@ -1,8 +1,8 @@
 package com.voronkov.cafevoiter.service;
 
-import com.voronkov.cafevoiter.exception.NotFoundException;
 import com.voronkov.cafevoiter.model.Cafe;
 import com.voronkov.cafevoiter.repository.CrudCafeRepository;
+import com.voronkov.cafevoiter.utils.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,8 @@ public class CafeService {
     }
 
     public Cafe save(Cafe cafe) {
-        log.info("IN кафе сохранено");
+        log.info("IN кафе {} сохранено", cafe.getName());
+        log.info("IN его блюда: {}", cafe.getMeals().toString());
         return cafeRepository.save(cafe);
     }
 
