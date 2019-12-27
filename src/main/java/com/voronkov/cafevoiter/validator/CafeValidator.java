@@ -1,8 +1,6 @@
 package com.voronkov.cafevoiter.validator;
 
 import com.voronkov.cafevoiter.model.Cafe;
-import com.voronkov.cafevoiter.repository.CrudCafeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -10,9 +8,6 @@ import org.springframework.validation.Validator;
 
 @Component
 public class CafeValidator implements Validator {
-
-    @Autowired
-    private CrudCafeRepository cafeRepository;
 
     @Override
     public boolean supports(Class<?> aClass) {

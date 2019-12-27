@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +28,14 @@ public class UserRestController {
         this.userValidator = userValidator;
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<User> getAll() {
         return userService.getAll();
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User getOne(@PathVariable("id") int id) {
         return userService.findById(id);
     }

@@ -3,15 +3,15 @@ package com.voronkov.cafevoiter.to;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.voronkov.cafevoiter.model.Cafe;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class CafeTo {
 
     private Integer id;
     private String name;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime createdDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate createdDate;
     private Integer votes;
 
     public CafeTo(Cafe cafe, Integer votes) {
@@ -29,7 +29,7 @@ public class CafeTo {
         return name;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 

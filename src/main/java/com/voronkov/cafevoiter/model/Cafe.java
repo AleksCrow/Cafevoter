@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +31,7 @@ public class Cafe {
 
     @Column(name = "date", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "cafe_votes",
@@ -41,14 +41,14 @@ public class Cafe {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "meals", joinColumns = @JoinColumn(name = "cafe_id"))
-    private List<Meals> meals = new ArrayList<>();
+    private List<Meal> meals = new ArrayList<>();
 
     public Cafe() {
     }
 
-    public Cafe(String name, List<Meals> meals) {
+    public Cafe(String name, List<Meal> meals) {
         this.name = name;
-        this.createdDate = LocalDateTime.now();
+        this.createdDate = LocalDate.now();
         this.meals = meals;
     }
 
@@ -68,11 +68,11 @@ public class Cafe {
         this.name = name;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -84,11 +84,11 @@ public class Cafe {
         this.votes = votes;
     }
 
-    public List<Meals> getMeals() {
+    public List<Meal> getMeals() {
         return meals;
     }
 
-    public void setMeals(List<Meals> meals) {
+    public void setMeals(List<Meal> meals) {
         this.meals = meals;
     }
 

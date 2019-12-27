@@ -7,17 +7,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class FoundExceptionHandler extends ResponseEntityExceptionHandler {
+public class CafeExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<FoundException> handleNotFoundException() {
-        return new ResponseEntity<>(new FoundException("Обьект не найден в базе данных"), HttpStatus.NOT_FOUND);
+    protected ResponseEntity<CafeException> handleNotFoundException() {
+        return new ResponseEntity<>(new CafeException("Обьект не найден в базе данных"), HttpStatus.NOT_FOUND);
     }
 
-    private static class FoundException {
+    @ExceptionHandler(DontCanVoteException.class)
+    protected ResponseEntity<CafeException> handleDontCanVoteException() {
+        return new ResponseEntity<>(new CafeException("Время для голосования окончено"), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    private static class CafeException {
         private String message;
 
-        public FoundException(String message) {
+        public CafeException(String message) {
             this.message = message;
         }
 

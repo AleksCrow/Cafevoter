@@ -3,16 +3,16 @@ package com.voronkov.cafevoiter.model;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Meals {
+public class Meal {
 
     private String name;
 
     private Double price;
 
-    public Meals() {
+    public Meal() {
     }
 
-    public Meals(String name, Double price) {
+    public Meal(String name, Double price) {
         this.name = name;
         this.price = price;
     }
