@@ -6,17 +6,18 @@ import com.voronkov.cafevoiter.model.User;
 import com.voronkov.cafevoiter.service.CafeService;
 import com.voronkov.cafevoiter.to.CafeTo;
 import com.voronkov.cafevoiter.utils.CafeUtil;
-import com.voronkov.cafevoiter.validator.CafeValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,38 +31,41 @@ public class CafeRestController {
     private static Logger log = LoggerFactory.getLogger(CafeRestController.class);
 
     private final CafeService cafeService;
-    private final CafeValidator cafeValidator;
 
     @Autowired
-    public CafeRestController(CafeValidator cafeValidator, CafeService cafeService) {
-        this.cafeValidator = cafeValidator;
+    public CafeRestController(CafeService cafeService) {
         this.cafeService = cafeService;
     }
 
     @GetMapping
     public List<CafeTo> getAllCafes() {
+        log.info("LOG список кафе получен");
         return CafeUtil.getCafesWithVotes(cafeService.getAll());
     }
 
     @GetMapping("{id}")
     public CafeTo getOne(@PathVariable("id") int id) {
+        log.info("LOG кафе с id: {} найдено", id);
         return CafeUtil.createWithVote(cafeService.getById(id));
     }
 
     @GetMapping("{id}/meals")
     public List<Meal> getMeals(@PathVariable("id") int id) {
+        log.info("LOG меню кафе с id: {} найдено", id);
         return cafeService.getById(id).getMeals();
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Cafe create(@RequestBody Cafe cafe, BindingResult result) {
-        cafeValidator.validate(cafe, result);
-        if (!result.hasErrors()) {
-            cafe.setCreatedDate(LocalDate.now());
-            return cafeService.save(cafe);
-        }
-        return null;
+    public ResponseEntity<Cafe> create(@RequestBody Cafe cafe) {
+        cafe.setCreatedDate(LocalDate.now());
+        Cafe created = cafeService.save(cafe);
+        log.info("LOG новое кафе c id: {} создано", cafe.getId());
+
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("cafes/{id}")
+                .buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @PutMapping("{id}")
@@ -69,18 +73,22 @@ public class CafeRestController {
     public Cafe update(@PathVariable("id") Cafe cafeFromDb, @RequestBody Cafe cafe) {
         //cafeFromDb - кафе из бд, которе редактируем, берём его значения и заменяем новыми, всеми кроме id и даты
         BeanUtils.copyProperties(cafe, cafeFromDb, "id", "date");
+        log.info("LOG кафе с id: {} обновлено", cafeFromDb.getId());
         return cafeService.save(cafeFromDb);
     }
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void delete(@PathVariable("id") Cafe cafe) {
-        cafeService.delete(cafe);
+    public void delete(@PathVariable("id") int id) {
+        log.info("LOG кафе с id: {} удалено", id);
+        cafeService.delete(id);
     }
 
     @GetMapping("{id}/vote")
-    public List<CafeTo> vote(@AuthenticationPrincipal User currentUser, @PathVariable("id") Cafe cafe) {
-        return CafeUtil.getCafesWithVotes(cafeService.vote(currentUser, cafe));
+    public List<CafeTo> vote(@AuthenticationPrincipal User currentUser, @PathVariable("id") int cafeId) {
+        cafeService.vote(currentUser, cafeId);
+        log.info("LOG голос отправлен");
+        return CafeUtil.getCafesWithVotes(cafeService.getAll());
     }
 
     @GetMapping("/filter")
@@ -90,16 +98,16 @@ public class CafeRestController {
                                    @RequestParam(name = "end", required = false)
                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                    LocalDate end) {
-        log.info("IN start = {}", start);
         List<Cafe> cafeDateFiltered = cafeService.getByDateOrBetweenDateTimes(adjustStartDateTime(start), adjustEndDateTime(end));
         return CafeUtil.getCafesWithVotes(cafeDateFiltered);
     }
 }
 
 
-//Обработать метод vote, чтобы возвращал список, а не проголосованное кафе
 //3. Сделать тесты
-//6. добавить шифрование пароля
+//добавить кеш
+//6. добавить шифровавание
+//создать описание
 
 /*команды для консоли
 

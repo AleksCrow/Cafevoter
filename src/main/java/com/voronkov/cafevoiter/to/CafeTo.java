@@ -44,6 +44,6 @@ public class CafeTo {
                 ", name='" + name + '\'' +
                 ", createdDate=" + createdDate +
                 ", votes=" + votes +
-                '}';
+                "}";
     }
 }

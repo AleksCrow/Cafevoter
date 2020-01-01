@@ -7,7 +7,6 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -129,18 +128,5 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }
