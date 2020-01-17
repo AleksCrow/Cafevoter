@@ -8,19 +8,15 @@ import com.voronkov.cafevoiter.to.CafeTo;
 import com.voronkov.cafevoiter.utils.CafeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.voronkov.cafevoiter.utils.CafeUtil.createWithVote;
 import static com.voronkov.cafevoiter.utils.DateTimeUtil.adjustEndDateTime;
 import static com.voronkov.cafevoiter.utils.DateTimeUtil.adjustStartDateTime;
 
@@ -38,53 +34,24 @@ public class CafeRestController {
     }
 
     @GetMapping
-    public List<CafeTo> getAllCafes() {
+    public List<CafeTo> getAll() {
         log.info("LOG список кафе получен");
         return CafeUtil.getCafesWithVotes(cafeService.getAll());
     }
 
     @GetMapping("{id}")
-    public CafeTo getOne(@PathVariable("id") int id) {
+    public CafeTo get(@PathVariable("id") int id) {
         log.info("LOG кафе с id: {} найдено", id);
-        return CafeUtil.createWithVote(cafeService.getById(id));
+        return createWithVote(cafeService.getById(id));
     }
 
-    @GetMapping("{id}/meals")
+    @GetMapping("meals/{id}")
     public List<Meal> getMeals(@PathVariable("id") int id) {
         log.info("LOG меню кафе с id: {} найдено", id);
-        return cafeService.getById(id).getMeals();
+        return cafeService.getMeals(id);
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Cafe> create(@RequestBody Cafe cafe) {
-        cafe.setCreatedDate(LocalDate.now());
-        Cafe created = cafeService.save(cafe);
-        log.info("LOG новое кафе c id: {} создано", cafe.getId());
-
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("cafes/{id}")
-                .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @PutMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Cafe update(@PathVariable("id") Cafe cafeFromDb, @RequestBody Cafe cafe) {
-        //cafeFromDb - кафе из бд, которе редактируем, берём его значения и заменяем новыми, всеми кроме id и даты
-        BeanUtils.copyProperties(cafe, cafeFromDb, "id", "date");
-        log.info("LOG кафе с id: {} обновлено", cafeFromDb.getId());
-        return cafeService.save(cafeFromDb);
-    }
-
-    @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void delete(@PathVariable("id") int id) {
-        log.info("LOG кафе с id: {} удалено", id);
-        cafeService.delete(id);
-    }
-
-    @GetMapping("{id}/vote")
+    @GetMapping("vote/{id}")
     public List<CafeTo> vote(@AuthenticationPrincipal User currentUser, @PathVariable("id") int cafeId) {
         cafeService.vote(currentUser, cafeId);
         log.info("LOG голос отправлен");
@@ -92,10 +59,10 @@ public class CafeRestController {
     }
 
     @GetMapping("/filter")
-    public List<CafeTo> getBetween(@RequestParam(name = "start", required = false)
+    public List<CafeTo> getBetween(@RequestParam(name = "startDate", required = false)
                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                    LocalDate start,
-                                   @RequestParam(name = "end", required = false)
+                                   @RequestParam(name = "endDate", required = false)
                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                    LocalDate end) {
         List<Cafe> cafeDateFiltered = cafeService.getByDateOrBetweenDateTimes(adjustStartDateTime(start), adjustEndDateTime(end));
@@ -105,6 +72,7 @@ public class CafeRestController {
 
 
 //3. Сделать тесты
+//доработать создание юзера
 //добавить кеш
 //6. добавить шифровавание
 //создать описание

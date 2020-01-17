@@ -1,6 +1,5 @@
-package com.voronkov.cafevoiter.configuration;
+package com.voronkov.cafevoiter.configuration.security;
 
-import com.voronkov.cafevoiter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,32 +13,47 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     //для данных из бд
-    private final UserService userService;
+    private final MyUserDetailsService myUserDetailsService;
 
     @Autowired
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
+    public SecurityConfig(MyUserDetailsService myUserDetailsService) {
+        this.myUserDetailsService = myUserDetailsService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                    .antMatchers("/users/register").anonymous()
-                    .antMatchers("/cafes/**").authenticated()
+        http.httpBasic().and()
+                    .authorizeRequests()
+                    .antMatchers("/**/admin/**").hasRole("ADMIN")
+                    .antMatchers("/users/profile/register").anonymous()
+                    .anyRequest().authenticated()
+                .and().csrf().disable();
+
+        http.formLogin().permitAll().defaultSuccessUrl("/cafes")
+                    .permitAll()
                 .and()
-                    .csrf().disable()
-                    .formLogin().defaultSuccessUrl("/cafes").permitAll()
-                .and()
-                    .logout().permitAll();
+                    .logout().logoutSuccessUrl("/login");
+
+//                    .exceptionHandling()
+//                    .accessDeniedHandler((request, response, accessDeniedException) -> {
+//                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+//                    })
+//                    .authenticationEntryPoint((request, response, authException) -> {
+//                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+//                    });
 
     }
 
     //для связи юзеров из бд
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)    //чтобы менеджер входил в бд и искал роли
-                .passwordEncoder(NoOpPasswordEncoder.getInstance());
+        auth.userDetailsService(myUserDetailsService)
+                            .passwordEncoder(NoOpPasswordEncoder.getInstance());
+
+//                .userDetailsService(userService)    //чтобы менеджер входил в бд и искал данные
+//                .passwordEncoder(NoOpPasswordEncoder.getInstance());
 //                .usersByUsernameQuery("select email, password, enabled from users where email=?")
 //                //позволяет получить юзеров с их ролями
 //                .authoritiesByUsernameQuery("select u.email, ur.role from users u inner join user_roles ur on u.id=ur.user_id where u.email=?");

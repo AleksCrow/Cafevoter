@@ -1,6 +1,7 @@
 package com.voronkov.cafevoiter.model;
 
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class Meal {
@@ -39,5 +40,19 @@ public class Meal {
                 "name='" + name + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Meal)) return false;
+        Meal meal = (Meal) o;
+        return name.equals(meal.name) &&
+                price.equals(meal.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, price);
     }
 }

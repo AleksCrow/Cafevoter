@@ -1,21 +1,23 @@
 package com.voronkov.cafevoiter.controller;
 
+import com.voronkov.cafevoiter.AuthorizedUser;
 import com.voronkov.cafevoiter.model.User;
 import com.voronkov.cafevoiter.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users/profile")
 public class UserRestController {
 
     private static Logger log = LoggerFactory.getLogger(UserRestController.class);
@@ -27,42 +29,37 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<User> getAll() {
-        log.info("LOG Получен список пользователей");
-        return userService.getAll();
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public User getOne(@AuthenticationPrincipal AuthorizedUser currentUser) {
+        log.info("LOG юзер с id найден: {}", currentUser.getId());
+        return userService.findById(currentUser.getId());
     }
 
-    @GetMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public User getOne(@PathVariable("id") int id) {
-        log.info("LOG Полльзователь с id: {} найден", id);
-        return userService.findById(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
+    @PostMapping("/register")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<User> register(@RequestBody User user) {
         User created = userService.save(user);
-        log.info("LOG новый юзер: {}", user);
-        log.info("LOG новый юзер c id: {} создан", user.getId());
+        log.info("LOG новый юзер: {} создан", user);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("users/{id}")
+                .path("{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping("{id}")
-    public User update(@PathVariable("id") User userFromDb, @RequestBody User user) {
-        BeanUtils.copyProperties(user, userFromDb, "id", "enabled", "roles");
-        log.info("LOG юзер c id: {} обновлен", user.getId());
-        return userService.update(userFromDb);
+    @PutMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@AuthenticationPrincipal AuthorizedUser currentUser, @Valid @RequestBody User user) {
+        user.setId(currentUser.getId());
+        user.setRoles(currentUser.getRoles());
+        log.info("LOG юзер c id: {} обновлен", currentUser.getId());
+        userService.update(user);
     }
 
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") User user) {
-        log.info("LOG юзер c id: {} удалён", user.getId());
-        userService.delete(user);
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@AuthenticationPrincipal AuthorizedUser currentUser) {
+        log.info("LOG юзер c id: {} удалён", currentUser.getId());
+        userService.delete(currentUser.getId());
     }
 }

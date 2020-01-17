@@ -3,10 +3,10 @@ DELETE FROM cafes;
 DELETE FROM users;
 ALTER SEQUENCE USER_SEQ RESTART WITH 100000;
 
-INSERT INTO users (name, email, password) VALUES
-('Admin', 'admin@gmail.com', 'admin'),
-('User1', 'user@yandex.ru', '123'),
-('User2', 'user@gmail.com', '123');
+INSERT INTO users (email, password) VALUES
+('admin@gmail.com', 'admin'),
+('user@gmail.com', '123'),
+('user@yandex.ru', '123');
 
 INSERT INTO user_roles (role, user_id) VALUES
 ('ROLE_USER', 100000),
@@ -20,6 +20,7 @@ INSERT INTO cafes (name, date) VALUES
 ('Пьяная Вишня', '2019-11-10'),
 ('Сушия', '2019-11-10'),
 ('Круасан-Кафе', '2019-11-10'),
+('Три топора', '2020-01-01'),
 ('Челентано', now()),
 ('Пузата хата', now()),
 ('Пьяная Вишня', now()),

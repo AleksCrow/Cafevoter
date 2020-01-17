@@ -4,15 +4,14 @@ DROP TABLE cafes IF EXISTS;
 DROP TABLE cafe_votes IF EXISTS;
 DROP TABLE meals IF EXISTS;
 DROP SEQUENCE USER_SEQ IF EXISTS;
-DROP SEQUENCE CAFE_SEQ IF EXISTS;
+DROP SEQUENCE CAFE_START_SEQ IF EXISTS;
 
 CREATE SEQUENCE USER_SEQ START WITH 100000;
-CREATE SEQUENCE CAFE_SEQ START WITH 1;
+CREATE SEQUENCE CAFE_START_SEQ START WITH 1;
 
 CREATE TABLE users
 (
     id               INTEGER DEFAULT USER_SEQ.nextval PRIMARY KEY,
-    name             VARCHAR(255)            NOT NULL,
     email            VARCHAR(255)            NOT NULL,
     password         VARCHAR(255)            NOT NULL,
     enabled          BOOLEAN DEFAULT TRUE    NOT NULL
@@ -22,7 +21,7 @@ CREATE UNIQUE INDEX users_unique_email_idx
 
 CREATE TABLE cafes
 (
-    id               INTEGER DEFAULT CAFE_SEQ.nextval PRIMARY KEY,
+    id               INTEGER DEFAULT CAFE_START_SEQ.nextval PRIMARY KEY,
     name             VARCHAR(255)            NOT NULL,
     date             TIMESTAMP DEFAULT now() NOT NULL
 );

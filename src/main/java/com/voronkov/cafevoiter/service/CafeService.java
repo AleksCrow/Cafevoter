@@ -1,18 +1,21 @@
 package com.voronkov.cafevoiter.service;
 
 import com.voronkov.cafevoiter.model.Cafe;
+import com.voronkov.cafevoiter.model.Meal;
 import com.voronkov.cafevoiter.model.User;
 import com.voronkov.cafevoiter.repository.CrudCafeRepository;
-import com.voronkov.cafevoiter.utils.TimeUtil;
 import com.voronkov.cafevoiter.utils.exception.DontCanVoteException;
-import com.voronkov.cafevoiter.utils.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+
+import static com.voronkov.cafevoiter.utils.TimeUtil.canVote;
 
 @Service
 public class CafeService {
@@ -32,8 +35,16 @@ public class CafeService {
         return find(id);
     }
 
+    public List<Meal> getMeals(int id) {
+        return find(id).getMeals();
+    }
+
     public Cafe save(Cafe cafe) {
         return cafeRepository.save(cafe);
+    }
+
+    public void update(Cafe cafe) {
+        cafeRepository.save(cafe);
     }
 
     public void delete(int id) {
@@ -44,7 +55,7 @@ public class CafeService {
     public void vote(User user, int cafeId) {
         Cafe cafe = find(cafeId);
         Set<User> votes = cafe.getVotes();
-        if (!TimeUtil.canVote(cafe)) {
+        if (!canVote(cafe)) {
             throw new DontCanVoteException();
         }
         if (votes.contains(user)) {
@@ -60,6 +71,6 @@ public class CafeService {
     }
 
     private Cafe find(int id) {
-        return cafeRepository.findById(id).orElseThrow(NotFoundException::new);
+        return cafeRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found"));
     }
 }

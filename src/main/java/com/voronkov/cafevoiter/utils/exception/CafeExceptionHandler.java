@@ -9,11 +9,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CafeExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<CafeException> handleNotFoundException() {
-        return new ResponseEntity<>(new CafeException("Обьект не найден в базе данных"), HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(DontCanVoteException.class)
     protected ResponseEntity<CafeException> handleDontCanVoteException() {
         return new ResponseEntity<>(new CafeException("Время для голосования окончено"), HttpStatus.NOT_ACCEPTABLE);

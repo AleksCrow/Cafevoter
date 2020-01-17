@@ -17,26 +17,26 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Cafe {
 
-    private static final int START_SEQ = 1;
+    public static final int CAFE_START_SEQ = 1;
 
     @Id
-    @SequenceGenerator(name = "CAFE_SEQ", sequenceName = "CAFE_SEQ", allocationSize = 1, initialValue = START_SEQ)
-    @GeneratedValue(generator = "CAFE_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "CAFE_START_SEQ", sequenceName = "CAFE_START_SEQ", allocationSize = 1, initialValue = CAFE_START_SEQ)
+    @GeneratedValue(generator = "CAFE_START_SEQ", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @NotBlank
     @Size(min = 1, max = 60)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "date", updatable = false)
+    @Column(name = "date", updatable = false, nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate createdDate;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "cafe_votes",
-            joinColumns = {@JoinColumn(name = "cafe_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")})
+            joinColumns = {@JoinColumn(name = "cafe_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false)})
     private Set<User> votes = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -46,10 +46,19 @@ public class Cafe {
     public Cafe() {
     }
 
-    public Cafe(String name, List<Meal> meals) {
+    public Cafe(Integer id, String name, LocalDate createdDate, List<Meal> meals) {
+        this.id = id;
         this.name = name;
-        this.createdDate = LocalDate.now();
+        this.createdDate = createdDate;
         this.meals = meals;
+    }
+
+    public Cafe(Integer id, String name, LocalDate createdDate, List<Meal> meals, Set<User> votes) {
+        this.id = id;
+        this.name = name;
+        this.createdDate = createdDate;
+        this.meals = meals;
+        this.votes = votes;
     }
 
     public Integer getId() {
@@ -80,9 +89,9 @@ public class Cafe {
         return votes;
     }
 
-    public void setVotes(Set<User> votes) {
-        this.votes = votes;
-    }
+//    public void setVotes(Set<User> votes) {
+//        this.votes = votes;
+//    }
 
     public List<Meal> getMeals() {
         return meals;
@@ -98,6 +107,7 @@ public class Cafe {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", createdDate=" + createdDate +
+                ", meals=" + meals +
                 '}';
     }
 }
