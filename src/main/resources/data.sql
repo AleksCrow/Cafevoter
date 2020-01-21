@@ -1,6 +1,7 @@
 DELETE FROM user_roles;
-DELETE FROM cafes;
+DELETE FROM restaurants;
 DELETE FROM users;
+DELETE FROM restaurant_votes;
 ALTER SEQUENCE USER_SEQ RESTART WITH 100000;
 
 INSERT INTO users (email, password) VALUES
@@ -14,25 +15,31 @@ INSERT INTO user_roles (role, user_id) VALUES
 ('ROLE_USER', 100001),
 ('ROLE_USER', 100002);
 
-INSERT INTO cafes (name, date) VALUES
-('Челентано', '2019-11-10'),
-('Пузата хата', '2019-11-10'),
-('Пьяная Вишня', '2019-11-10'),
-('Сушия', '2019-11-10'),
-('Круасан-Кафе', '2019-11-10'),
-('Три топора', '2020-01-01'),
-('Челентано', now()),
-('Пузата хата', now()),
-('Пьяная Вишня', now()),
-('Сушия', now()),
-('Круасан-Кафе', now());
+INSERT INTO restaurants (name, date) VALUES
+('El Celler de Can Roca', '2019-11-10'),
+('White Rabbit', '2019-11-10'),
+('Peter Luger', '2019-11-10'),
+('Can Majo', '2019-11-10'),
+('Maní', '2019-11-10'),
+('Sukiyabashi Jirō', '2020-01-01'),
+('Sierra Mar', now()),
+('D.O.M.', now()),
+('Ithaa', now()),
+('360 Istanbul East', now()),
+('Blindekuh', now());
 
-INSERT INTO CAFE_VOTES (CAFE_ID, USER_ID) VALUES
+INSERT INTO restaurant_votes (restaurant_id, user_id) VALUES
 (1, 100001),
 (1, 100002),
+(6, 100000),
+(7, 100001),
+(8, 100002),
+(10, 100002),
+(9, 100000),
+(9, 100001),
 (4, 100000);
 
-INSERT  INTO meals (name, price, cafe_id) VALUES
+INSERT  INTO meals (name, price, restaurant_id) VALUES
 ('Пицца', 60.00, 1 ),
 ('Блинчики', 25.00, 1 ),
 ('Борщ', 36.00, 2 ),
