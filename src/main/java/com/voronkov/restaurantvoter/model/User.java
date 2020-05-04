@@ -1,5 +1,6 @@
 package com.voronkov.restaurantvoter.model;
 
+import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -41,6 +42,7 @@ public class User {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
+    @BatchSize(size = 20)
     private Set<Role> roles;
 
     public User() {

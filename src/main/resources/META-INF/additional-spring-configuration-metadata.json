@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "log4j.logger.org.hibernate",
+      "type": "java.lang.String",
+      "description": "Description for log4j.logger.org.hibernate."
+    },
+    {
+      "name": "log4j",
+      "type": "java.lang.String",
+      "description": "Description for log4j."
+    }
+  ] }

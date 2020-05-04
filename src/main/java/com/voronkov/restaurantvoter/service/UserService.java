@@ -1,9 +1,12 @@
 package com.voronkov.restaurantvoter.service;
 
 import com.voronkov.restaurantvoter.AuthorizedUser;
+import com.voronkov.restaurantvoter.controller.RestaurantRestController;
 import com.voronkov.restaurantvoter.model.Role;
 import com.voronkov.restaurantvoter.model.User;
 import com.voronkov.restaurantvoter.repository.CrudUserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,14 +24,16 @@ public class UserService implements UserDetailsService {
 
     private final CrudUserRepository userRepository;
 
+    private static Logger log = LoggerFactory.getLogger(UserDetailsService.class);
+
     @Autowired
     public UserService(CrudUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     public List<User> getAll() {
+        log.info("Получены пользователи в сервисе");
         return userRepository.findAll();
-
     }
 
     public User findById(int id) {

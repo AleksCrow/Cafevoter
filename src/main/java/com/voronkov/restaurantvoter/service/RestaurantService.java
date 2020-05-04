@@ -6,6 +6,8 @@ import com.voronkov.restaurantvoter.model.User;
 import com.voronkov.restaurantvoter.repository.CrudRestaurantRepository;
 import com.voronkov.restaurantvoter.utils.exception.DontCanVoteException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class RestaurantService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         return restaurantRepository.findAll();
     }
@@ -39,19 +42,23 @@ public class RestaurantService {
         return find(id).getMeals();
     }
 
+    @CacheEvict(value = "restaurants", allEntries = true)
     public Restaurant save(Restaurant restaurant) {
         return restaurantRepository.save(restaurant);
     }
 
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void update(Restaurant restaurant) {
         restaurantRepository.save(restaurant);
     }
 
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void delete(int id) {
         Restaurant restaurant = find(id);
         restaurantRepository.delete(restaurant);
     }
 
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void vote(User user, int restaurantId) {
         Restaurant restaurant = find(restaurantId);
         Set<User> votes = restaurant.getVotes();
