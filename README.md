@@ -1,5 +1,5 @@
 # RestaurantVoter
-### App for create and display ratings of cafes and restaurantsys
+### App for create and display ratings of cafes and restaurants
 Приложение позволяет увидеть список ресторанов с меню и количеством голосов, зарегистрироваться и войти под своим логином, администратор создаёт/удаляет рестораны, пользователи голосуют за понравившийся ресторан.
 
 ## Task:
