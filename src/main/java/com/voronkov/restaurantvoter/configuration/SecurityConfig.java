@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .logout().logoutSuccessUrl("/login");
+
     }
 
     //для связи юзеров из бд, пароли оставил незашифрованными
