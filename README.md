@@ -29,9 +29,6 @@ Spring Boot, H2 db, JPA(Hibernate), Spring Security, JUnit5, ehcache, slf4j
 
 -----------------------------
 
-#### Get started:
-Скачайте репозиторий, откройте файл pom.xml через intellij IDEA, запустите RestaurantVoterApplication.java
-
 #### Команды для CURL:
 - ***Получение списка ресторанов*** ==> `curl localhost:8080/restaurants -u admin@gmail.com:admin`
 - ***Получение списка меню в ресторане*** ==> `curl localhost:8080/restaurants/meals/1 -u admin@gmail.com:admin`
