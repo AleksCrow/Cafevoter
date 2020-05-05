@@ -2,6 +2,7 @@ package com.voronkov.restaurantvoter.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -37,6 +38,7 @@ public class Restaurant {
     @JoinTable(name = "restaurant_votes",
             joinColumns = {@JoinColumn(name = "restaurant_id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false)})
+    @BatchSize(size = 20)
     private Set<User> votes = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.LAZY)

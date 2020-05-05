@@ -35,18 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .logout().logoutSuccessUrl("/login");
-
-//                    .exceptionHandling()
-//                    .accessDeniedHandler((request, response, accessDeniedException) -> {
-//                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
-//                    })
-//                    .authenticationEntryPoint((request, response, authException) -> {
-//                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-//                    });
-
     }
 
-    //для связи юзеров из бд
+    //для связи юзеров из бд, пароли оставил незашифрованными
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(myUserDetailsService)
