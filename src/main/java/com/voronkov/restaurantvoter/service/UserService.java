@@ -1,13 +1,12 @@
 package com.voronkov.restaurantvoter.service;
 
 import com.voronkov.restaurantvoter.AuthorizedUser;
-import com.voronkov.restaurantvoter.controller.RestaurantRestController;
 import com.voronkov.restaurantvoter.model.Role;
 import com.voronkov.restaurantvoter.model.User;
 import com.voronkov.restaurantvoter.repository.CrudUserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,15 +23,13 @@ public class UserService implements UserDetailsService {
 
     private final CrudUserRepository userRepository;
 
-    private static Logger log = LoggerFactory.getLogger(UserDetailsService.class);
-
     @Autowired
     public UserService(CrudUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    @Cacheable("users")
     public List<User> getAll() {
-        log.info("Получены пользователи в сервисе");
         return userRepository.findAll();
     }
 
@@ -40,6 +37,7 @@ public class UserService implements UserDetailsService {
         return find(id);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public User save(User user) {
         if (user.getId() == null) {
             Set<Role> roles = new HashSet<>();
@@ -49,10 +47,12 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public void update(User user) {
         userRepository.save(user);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         User user = find(id);
         userRepository.delete(user);
