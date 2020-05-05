@@ -25,7 +25,7 @@ As a result, provide a link to github repository. It should contain the code, RE
 -----------------------------
 
 #### Используемые технологии:
-Spring Boot, H2 db, JPA(Hibernate), Spring Security, JUnit5, ehcache(кешируются данные пользователей), slf4j
+Spring Boot, REST, H2 db, JPA(Hibernate), Spring Security, JUnit5, ehcache(кешируются данные пользователей), slf4j
 
 -----------------------------
 
