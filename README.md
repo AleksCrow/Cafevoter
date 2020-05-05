@@ -1,5 +1,5 @@
 # RestaurantVoter
-### App for create and display ratings of cafes and restaurantsys
+### App for create and display ratings of cafes and restaurants
 Приложение позволяет увидеть список ресторанов с меню и количеством голосов, зарегистрироваться и войти под своим логином, администратор создаёт/удаляет рестораны, пользователи голосуют за понравившийся ресторан.
 
 ## Task:
@@ -25,12 +25,9 @@ As a result, provide a link to github repository. It should contain the code, RE
 -----------------------------
 
 #### Используемые технологии:
-Spring Boot, H2 db, JPA(Hibernate), Spring Security, JUnit5, ehcache, slf4j
+Spring Boot, REST, H2 db, JPA(Hibernate), Spring Security, JUnit5, ehcache(кешируются данные пользователей), slf4j
 
 -----------------------------
-
-#### Get started:
-Скачайте репозиторий, откройте файл pom.xml через intellij IDEA, запустите RestaurantVoterApplication.java
 
 #### Команды для CURL:
 - ***Получение списка ресторанов*** ==> `curl localhost:8080/restaurants -u admin@gmail.com:admin`
